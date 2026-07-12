@@ -1,23 +1,12 @@
-from sqlalchemy import text
-
+from app.database.base import Base
 from app.database.db import engine
 
+# Import all models
+from app.models import *
 
-def test_database_connection() -> None:
-    """
-    Verify that the application can connect to PostgreSQL.
-
-    Database tables are created and updated through Alembic migrations.
-    """
-
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT 1"))
-        value = result.scalar_one()
-
-        if value != 1:
-            raise RuntimeError("Unexpected PostgreSQL response.")
-
+def create_database():
+    Base.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
-    test_database_connection()
-    print("PostgreSQL connection successful.")
+    create_database()
+    print("Database created successfully!")
