@@ -4,9 +4,8 @@ from sqlalchemy import (
     String,
     Text,
     Date,
-    ForeignKey
+    ForeignKey,
 )
-
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -17,19 +16,23 @@ class Audit(Base):
 
     id = Column(Integer, primary_key=True)
 
+    title = Column(String(200), nullable=False)
+
     department_id = Column(
         Integer,
-        ForeignKey("departments.id")
+        ForeignKey("departments.id"),
     )
 
-    audit_name = Column(String(150))
-
-    auditor = Column(String(100))
+    auditor_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+    )
 
     audit_date = Column(Date)
 
-    remarks = Column(Text)
+    findings_summary = Column(Text)
 
-    status = Column(String(30))
+    status = Column(String(30), default="active")
 
     department = relationship("Department")
+    auditor = relationship("User")

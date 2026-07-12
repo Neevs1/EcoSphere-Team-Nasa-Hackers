@@ -1,7 +1,7 @@
 from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, func as sa_func, or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -32,10 +32,7 @@ class CRUDBase(
     ]
 ):
     """
-    Generic CRUD class.
-
-    This class provides reusable database operations for
-    every SQLAlchemy model in the project.
+    Generic CRUD class with search, status filtering, and soft delete.
     """
 
     def __init__(
@@ -49,14 +46,29 @@ class CRUDBase(
         db: Session,
         record_id: int,
     ) -> ModelType | None:
-        """
-        Return one record by primary-key ID.
-        """
-
         return db.get(
             self.model,
             record_id,
         )
+
+    def _build_list_statement(
+        self,
+        search: str | None = None,
+        status_filter: str | None = None,
+    ):
+        stmt = select(self.model)
+
+        if search and hasattr(self.model, "name"):
+            stmt = stmt.where(self.model.name.ilike(f"%{search}%"))
+            
+        if status_filter is not None and hasattr(self.model, "status"):
+            if isinstance(self.model.status.type.python_type, type(bool)):
+                is_active = status_filter.lower() == "active"
+                stmt = stmt.where(self.model.status == is_active)
+            else:
+                stmt = stmt.where(self.model.status == status_filter)
+                
+        return stmt
 
     def get_multi(
         self,
@@ -64,20 +76,24 @@ class CRUDBase(
         *,
         skip: int = 0,
         limit: int = 100,
+        search: str | None = None,
+        status_filter: str | None = None,
     ) -> list[ModelType]:
-        """
-        Return multiple records with pagination.
-        """
+        stmt = self._build_list_statement(search, status_filter)
+        if hasattr(self.model, "id"):
+            stmt = stmt.order_by(self.model.id.desc())
+        stmt = stmt.offset(skip).limit(limit)
+        return list(db.scalars(stmt).all())
 
-        statement = (
-            select(self.model)
-            .offset(skip)
-            .limit(limit)
-        )
-
-        result = db.scalars(statement)
-
-        return list(result.all())
+    def count(
+        self,
+        db: Session,
+        search: str | None = None,
+        status_filter: str | None = None,
+    ) -> int:
+        stmt = self._build_list_statement(search, status_filter)
+        count_stmt = select(sa_func.count()).select_from(stmt.subquery())
+        return db.scalar(count_stmt) or 0
 
     def create(
         self,
@@ -85,27 +101,14 @@ class CRUDBase(
         *,
         obj_in: CreateSchemaType,
     ) -> ModelType:
-        """
-        Create a new database record.
-        """
-
         object_data = obj_in.model_dump()
-
-        db_object = self.model(
-            **object_data
-        )
+        db_object = self.model(**object_data)
 
         try:
             db.add(db_object)
             db.commit()
             db.refresh(db_object)
-
             return db_object
-
-        except IntegrityError:
-            db.rollback()
-            raise
-
         except Exception:
             db.rollback()
             raise
@@ -117,38 +120,20 @@ class CRUDBase(
         db_object: ModelType,
         obj_in: UpdateSchemaType | dict[str, Any],
     ) -> ModelType:
-        """
-        Update an existing database record.
-
-        Only explicitly provided fields are changed.
-        """
-
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
-            update_data = obj_in.model_dump(
-                exclude_unset=True
-            )
+            update_data = obj_in.model_dump(exclude_unset=True)
 
         for field_name, value in update_data.items():
             if hasattr(db_object, field_name):
-                setattr(
-                    db_object,
-                    field_name,
-                    value,
-                )
+                setattr(db_object, field_name, value)
 
         try:
             db.add(db_object)
             db.commit()
             db.refresh(db_object)
-
             return db_object
-
-        except IntegrityError:
-            db.rollback()
-            raise
-
         except Exception:
             db.rollback()
             raise
@@ -159,57 +144,23 @@ class CRUDBase(
         *,
         record_id: int,
     ) -> ModelType | None:
-        """
-        Delete a database record by ID.
-        """
-
-        db_object = self.get(
-            db,
-            record_id,
-        )
-
+        db_object = self.get(db, record_id)
         if db_object is None:
             return None
 
         try:
-            db.delete(db_object)
-            db.commit()
-
+            if hasattr(self.model, "status") and isinstance(self.model.status.type.python_type, type(bool)):
+                # Soft delete
+                db_object.status = False
+                db.commit()
+            else:
+                # Hard delete
+                db.delete(db_object)
+                db.commit()
             return db_object
-
         except IntegrityError:
             db.rollback()
             raise
-
         except Exception:
             db.rollback()
             raise
-
-    def exists(
-        self,
-        db: Session,
-        *,
-        record_id: int,
-    ) -> bool:
-        """
-        Check whether a record exists.
-        """
-
-        return self.get(
-            db,
-            record_id,
-        ) is not None
-
-    def count(
-        self,
-        db: Session,
-    ) -> int:
-        """
-        Return the total number of records.
-        """
-
-        statement = select(self.model)
-
-        records = db.scalars(statement).all()
-
-        return len(records)

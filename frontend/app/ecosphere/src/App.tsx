@@ -2,22 +2,17 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LoginPage } from "@/pages/LoginPage";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { SettingsPage } from "@/pages/settings/SettingsPage";
+import { AppLayout } from "@/components/layout/AppLayout";
 
-/**
- * Placeholder page component for authenticated routes.
- * Will be replaced by real module pages in later sprints.
- */
-function DashboardPlaceholder() {
-  return (
-    <div className="min-h-screen bg-background text-foreground p-8">
-      <h1 className="text-h1 font-semibold">Dashboard</h1>
-      <p className="text-muted-foreground mt-2">
-        Welcome to EcoSphere. Module pages will be built in later sprints.
-      </p>
-    </div>
-  );
-}
+// Pages
+import { DashboardPage } from "@/pages/DashboardPage";
+import { EnvironmentalPage } from "@/pages/EnvironmentalPage";
+import { SocialPage } from "@/pages/SocialPage";
+import { GovernancePage } from "@/pages/GovernancePage";
+import { GamificationPage } from "@/pages/GamificationPage";
+import { ReportsPage } from "@/pages/ReportsPage";
+import { SettingsPage } from "@/pages/settings/SettingsPage";
+import { NotificationsPage } from "@/pages/NotificationsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,26 +28,28 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<LoginPage />} />
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardPlaceholder />} />
-          {/* Placeholder routes for future sprints */}
-          <Route path="/environmental" element={<DashboardPlaceholder />} />
-          <Route path="/social" element={<DashboardPlaceholder />} />
-          <Route path="/governance" element={<DashboardPlaceholder />} />
-          <Route path="/gamification" element={<DashboardPlaceholder />} />
-          <Route path="/reports" element={<DashboardPlaceholder />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Route>
+          {/* Protected routes with layout */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/environmental" element={<EnvironmentalPage />} />
+              <Route path="/social" element={<SocialPage />} />
+              <Route path="/governance" element={<GovernancePage />} />
+              <Route path="/gamification" element={<GamificationPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+            </Route>
+          </Route>
 
-        {/* Catch-all redirect */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  </QueryClientProvider>
+          {/* Catch-all redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

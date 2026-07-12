@@ -30,10 +30,6 @@ class BaseService(
         UpdateSchemaType,
     ]
 ):
-    """
-    Generic service wrapper around CRUD operations.
-    """
-
     def __init__(
         self,
         crud: CRUDBase[
@@ -49,41 +45,45 @@ class BaseService(
         db: Session,
         record_id: int,
     ) -> ModelType | None:
-        return self.crud.get(
-            db,
-            record_id,
-        )
+        return self.crud.get(db, record_id)
 
     def list(
         self,
         db: Session,
         *,
-        skip: int = 0,
-        limit: int = 100,
-    ) -> list[ModelType]:
-        if skip < 0:
-            raise ValueError("skip cannot be negative.")
+        page: int = 1,
+        page_size: int = 100,
+        search: str | None = None,
+        status_filter: str | None = None,
+    ) -> dict:
+        if page < 1:
+            raise ValueError("page must be >= 1.")
+        if page_size < 1 or page_size > 500:
+            raise ValueError("page_size must be between 1 and 500.")
 
-        if limit < 1 or limit > 500:
-            raise ValueError(
-                "limit must be between 1 and 500."
-            )
-
-        return self.crud.get_multi(
-            db,
-            skip=skip,
-            limit=limit,
+        skip = (page - 1) * page_size
+        items = self.crud.get_multi(
+            db, skip=skip, limit=page_size, search=search, status_filter=status_filter
         )
+        total = self.crud.count(db, search=search, status_filter=status_filter)
+        
+        import math
+        total_pages = max(1, math.ceil(total / page_size))
+
+        return {
+            "items": items,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+        }
 
     def create(
         self,
         db: Session,
         obj_in: CreateSchemaType,
     ) -> ModelType:
-        return self.crud.create(
-            db,
-            obj_in=obj_in,
-        )
+        return self.crud.create(db, obj_in=obj_in)
 
     def update(
         self,
@@ -91,26 +91,14 @@ class BaseService(
         record_id: int,
         obj_in: UpdateSchemaType,
     ) -> ModelType | None:
-        db_object = self.crud.get(
-            db,
-            record_id,
-        )
-
+        db_object = self.crud.get(db, record_id)
         if db_object is None:
             return None
-
-        return self.crud.update(
-            db,
-            db_object=db_object,
-            obj_in=obj_in,
-        )
+        return self.crud.update(db, db_object=db_object, obj_in=obj_in)
 
     def delete(
         self,
         db: Session,
         record_id: int,
     ) -> ModelType | None:
-        return self.crud.delete(
-            db,
-            record_id=record_id,
-        )
+        return self.crud.delete(db, record_id=record_id)

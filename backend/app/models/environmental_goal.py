@@ -5,9 +5,8 @@ from sqlalchemy import (
     Float,
     Date,
     Boolean,
-    ForeignKey
+    ForeignKey,
 )
-
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -20,16 +19,16 @@ class EnvironmentalGoal(Base):
 
     department_id = Column(
         Integer,
-        ForeignKey("departments.id")
+        ForeignKey("departments.id"),
     )
 
-    goal_name = Column(String(200), nullable=False)
+    name = Column(String(200), nullable=False)
 
-    target_value = Column(Float)
+    target_co2 = Column(Float)
 
-    achieved_value = Column(Float)
+    current_co2 = Column(Float, default=0.0)
 
-    target_date = Column(Date)
+    deadline = Column(Date)
 
     status = Column(Boolean, default=True)
 

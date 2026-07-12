@@ -2,63 +2,49 @@ import { useState } from 'react';
 import { DepartmentsTab } from './DepartmentsTab';
 import { CategoriesTab } from './CategoriesTab';
 import { EsgConfigurationTab } from './EsgConfigurationTab';
+import { Settings as SettingsIcon, Building, Tags, SlidersHorizontal } from 'lucide-react';
 
 type Tab = 'departments' | 'categories' | 'esg';
+
+const TABS: { id: Tab; label: string; icon: typeof SettingsIcon }[] = [
+  { id: 'departments', label: 'Departments', icon: Building },
+  { id: 'categories', label: 'Categories', icon: Tags },
+  { id: 'esg', label: 'ESG Config', icon: SlidersHorizontal },
+];
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<Tab>('departments');
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <header>
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500">
-            Platform Settings
-          </h1>
-          <p className="text-slate-400 mt-2 text-lg">
-            Manage your master data, categories, and ESG weights.
-          </p>
-        </header>
+    <div className="space-y-8 max-w-[1400px]">
+      <div>
+        <h1 className="text-h1 font-semibold text-foreground">Platform Settings</h1>
+        <p className="text-body text-muted-foreground mt-1">
+          Manage your master data, categories, and ESG weights.
+        </p>
+      </div>
 
-        <div className="flex space-x-2 bg-slate-900/50 p-1.5 rounded-xl backdrop-blur-md border border-slate-800/50 w-fit">
+      <div className="flex gap-1 bg-muted/50 p-1 rounded-[var(--radius-btn)] w-fit">
+        {TABS.map((t) => (
           <button
-            onClick={() => setActiveTab('departments')}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-              activeTab === 'departments'
-                ? 'bg-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-[var(--radius-input)] text-small font-medium transition-all duration-150 ${
+              activeTab === t.id
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Departments
+            <t.icon className="w-4 h-4" strokeWidth={2} />
+            {t.label}
           </button>
-          <button
-            onClick={() => setActiveTab('categories')}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-              activeTab === 'categories'
-                ? 'bg-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
-            Categories
-          </button>
-          <button
-            onClick={() => setActiveTab('esg')}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-              activeTab === 'esg'
-                ? 'bg-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
-            ESG Configuration
-          </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="bg-slate-900/40 rounded-2xl border border-slate-800/50 backdrop-blur-sm p-6 overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-20"></div>
-          {activeTab === 'departments' && <DepartmentsTab />}
-          {activeTab === 'categories' && <CategoriesTab />}
-          {activeTab === 'esg' && <EsgConfigurationTab />}
-        </div>
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-6">
+        {activeTab === 'departments' && <DepartmentsTab />}
+        {activeTab === 'categories' && <CategoriesTab />}
+        {activeTab === 'esg' && <EsgConfigurationTab />}
       </div>
     </div>
   );

@@ -4,9 +4,8 @@ from sqlalchemy import (
     String,
     Text,
     Date,
-    ForeignKey
+    ForeignKey,
 )
-
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -19,17 +18,30 @@ class ComplianceIssue(Base):
 
     audit_id = Column(
         Integer,
-        ForeignKey("audits.id")
+        ForeignKey("audits.id"),
     )
 
-    severity = Column(String(30))
+    severity = Column(String(30), nullable=False)
 
     description = Column(Text)
 
-    owner = Column(String(100))
+    owner_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+    )
 
-    due_date = Column(Date)
+    department_id = Column(
+        Integer,
+        ForeignKey("departments.id"),
+    )
 
-    status = Column(String(30))
+    due_date = Column(Date, nullable=False)
+
+    status = Column(
+        String(30), default="Open"
+    )
 
     audit = relationship("Audit")
+    owner = relationship("User")
+    department = relationship("Department")

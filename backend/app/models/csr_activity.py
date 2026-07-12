@@ -5,9 +5,8 @@ from sqlalchemy import (
     Text,
     Date,
     Boolean,
-    ForeignKey
+    ForeignKey,
 )
-
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -22,15 +21,25 @@ class CSRActivity(Base):
 
     category_id = Column(
         Integer,
-        ForeignKey("categories.id")
+        ForeignKey("categories.id"),
     )
 
     description = Column(Text)
 
-    organizer = Column(String(100))
+    points = Column(Integer, default=0)
 
-    activity_date = Column(Date)
+    evidence_required = Column(
+        Boolean, default=False
+    )
 
-    status = Column(Boolean, default=True)
+    status = Column(
+        String(30), default="Draft"
+    )
+
+    start_date = Column(Date)
+
+    end_date = Column(Date)
+
+    created_at = Column(Date)
 
     category = relationship("Category")

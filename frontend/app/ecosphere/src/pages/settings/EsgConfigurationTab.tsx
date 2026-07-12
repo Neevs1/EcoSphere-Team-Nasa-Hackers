@@ -56,26 +56,24 @@ export function EsgConfigurationTab() {
   };
 
   if (isLoading) {
-    return <div className="text-slate-400 py-8 text-center">Loading configuration...</div>;
+    return <div className="text-muted-foreground py-8 text-center text-small">Loading configuration...</div>;
   }
 
   const currentSum = formData.environmental_weight + formData.social_weight + formData.governance_weight;
   const isSumValid = Math.abs(currentSum - 1.0) <= 0.001;
 
   return (
-    <div className="space-y-6 max-w-3xl">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-slate-100">Global ESG Configuration</h2>
-      </div>
+    <div className="space-y-8 max-w-3xl">
+      <h2 className="text-h4 font-medium text-foreground">Global ESG Configuration</h2>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* Feature Toggles */}
-        <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 space-y-6">
-          <h3 className="text-lg font-medium text-slate-200">Feature Toggles</h3>
+        <div className="space-y-6">
+          <h3 className="text-body font-semibold text-foreground border-b border-border pb-2">Feature Toggles</h3>
           
-          <label className="flex items-start space-x-4 cursor-pointer group">
-            <div className="relative flex items-center justify-center mt-1">
+          <label className="flex items-start gap-4 cursor-pointer group">
+            <div className="relative flex items-center justify-center mt-0.5">
               <input
                 type="checkbox"
                 name="auto_emission_calculation"
@@ -83,16 +81,16 @@ export function EsgConfigurationTab() {
                 onChange={handleChange}
                 className="peer sr-only"
               />
-              <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-border peer-checked:border-primary"></div>
             </div>
             <div>
-              <div className="text-slate-200 font-medium group-hover:text-white transition-colors">Auto Emission Calculation</div>
-              <div className="text-slate-400 text-sm mt-1">Automatically create carbon transactions when operational records are added.</div>
+              <div className="text-small font-medium text-foreground transition-colors">Auto Emission Calculation</div>
+              <div className="text-caption text-muted-foreground mt-1">Automatically create carbon transactions when operational records are added.</div>
             </div>
           </label>
 
-          <label className="flex items-start space-x-4 cursor-pointer group">
-            <div className="relative flex items-center justify-center mt-1">
+          <label className="flex items-start gap-4 cursor-pointer group">
+            <div className="relative flex items-center justify-center mt-0.5">
               <input
                 type="checkbox"
                 name="require_evidence_for_csr"
@@ -100,24 +98,24 @@ export function EsgConfigurationTab() {
                 onChange={handleChange}
                 className="peer sr-only"
               />
-              <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+              <div className="w-11 h-6 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary border border-border peer-checked:border-primary"></div>
             </div>
             <div>
-              <div className="text-slate-200 font-medium group-hover:text-white transition-colors">Require Evidence for CSR</div>
-              <div className="text-slate-400 text-sm mt-1">Employees must provide a proof URL before a CSR participation can be approved.</div>
+              <div className="text-small font-medium text-foreground transition-colors">Require Evidence for CSR</div>
+              <div className="text-caption text-muted-foreground mt-1">Employees must provide a proof URL before a CSR participation can be approved.</div>
             </div>
           </label>
         </div>
 
         {/* ESG Weights */}
-        <div className="bg-slate-900/50 p-6 rounded-xl border border-slate-700/50 space-y-6">
-          <div className="flex justify-between items-start">
+        <div className="space-y-6">
+          <div className="flex justify-between items-start border-b border-border pb-2">
             <div>
-              <h3 className="text-lg font-medium text-slate-200">Scoring Weights</h3>
-              <p className="text-slate-400 text-sm mt-1">Adjust the weights for calculating the overall ESG score. Must sum to exactly 1.00.</p>
+              <h3 className="text-body font-semibold text-foreground">Scoring Weights</h3>
+              <p className="text-caption text-muted-foreground mt-1">Adjust the weights for calculating the overall ESG score. Must sum to exactly 1.00.</p>
             </div>
-            <div className={`px-3 py-1 rounded-full text-sm font-medium border ${
-              isSumValid ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'
+            <div className={`px-2.5 py-1 rounded-full text-caption font-medium border ${
+              isSumValid ? 'bg-success/10 text-success border-success/20' : 'bg-destructive/10 text-destructive border-destructive/20'
             }`}>
               Sum: {currentSum.toFixed(2)}
             </div>
@@ -125,7 +123,7 @@ export function EsgConfigurationTab() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 block">Environmental (E)</label>
+              <label className="text-small font-medium text-foreground block">Environmental (E)</label>
               <input
                 type="number"
                 step="0.01"
@@ -134,11 +132,11 @@ export function EsgConfigurationTab() {
                 name="environmental_weight"
                 value={formData.environmental_weight}
                 onChange={handleChange}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full bg-muted border-none rounded-[var(--radius-input)] px-4 py-2 text-small text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 block">Social (S)</label>
+              <label className="text-small font-medium text-foreground block">Social (S)</label>
               <input
                 type="number"
                 step="0.01"
@@ -147,11 +145,11 @@ export function EsgConfigurationTab() {
                 name="social_weight"
                 value={formData.social_weight}
                 onChange={handleChange}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full bg-muted border-none rounded-[var(--radius-input)] px-4 py-2 text-small text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 block">Governance (G)</label>
+              <label className="text-small font-medium text-foreground block">Governance (G)</label>
               <input
                 type="number"
                 step="0.01"
@@ -160,14 +158,14 @@ export function EsgConfigurationTab() {
                 name="governance_weight"
                 value={formData.governance_weight}
                 onChange={handleChange}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full bg-muted border-none rounded-[var(--radius-input)] px-4 py-2 text-small text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm">
+          <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-[var(--radius-input)] text-small">
             {error}
           </div>
         )}
@@ -176,7 +174,7 @@ export function EsgConfigurationTab() {
           <button
             type="submit"
             disabled={updateConfig.isPending || !isSumValid}
-            className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50 disabled:shadow-none"
+            className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium text-small rounded-[var(--radius-btn)] transition-all disabled:opacity-50"
           >
             {updateConfig.isPending ? 'Saving...' : 'Save Configuration'}
           </button>

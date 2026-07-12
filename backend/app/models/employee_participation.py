@@ -3,9 +3,9 @@ from sqlalchemy import (
     Integer,
     String,
     Date,
-    ForeignKey
+    ForeignKey,
+    UniqueConstraint,
 )
-
 from sqlalchemy.orm import relationship
 
 from app.database.base import Base
@@ -14,21 +14,37 @@ from app.database.base import Base
 class EmployeeParticipation(Base):
     __tablename__ = "employee_participations"
 
-    id = Column(Integer, primary_key=True)
-
-    employee_name = Column(String(100), nullable=False)
-
-    csr_activity_id = Column(
-        Integer,
-        ForeignKey("csr_activities.id")
+    __table_args__ = (
+        UniqueConstraint(
+            "employee_id",
+            "activity_id",
+            name="uq_employee_activity",
+        ),
     )
 
-    proof = Column(String(255))
+    id = Column(Integer, primary_key=True)
 
-    approval_status = Column(String(30))
+    employee_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+    )
 
-    points_earned = Column(Integer)
+    activity_id = Column(
+        Integer,
+        ForeignKey("csr_activities.id"),
+        nullable=False,
+    )
+
+    proof_url = Column(String(500))
+
+    approval_status = Column(
+        String(30), default="Pending"
+    )
+
+    points_earned = Column(Integer, default=0)
 
     completion_date = Column(Date)
 
-    csr_activity = relationship("CSRActivity")
+    employee = relationship("User")
+    activity = relationship("CSRActivity")

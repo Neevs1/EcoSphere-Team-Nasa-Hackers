@@ -4,10 +4,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // --- Shared Types ---
 export interface PaginatedResponse<T> {
   items: T[];
-  total: int;
-  page: int;
-  page_size: int;
-  total_pages: int;
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
 }
 
 // --- EsgConfiguration ---

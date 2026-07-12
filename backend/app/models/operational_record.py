@@ -3,9 +3,8 @@ from sqlalchemy import (
     Integer,
     Float,
     String,
-    Date,
-    ForeignKey,
     DateTime,
+    ForeignKey,
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -13,8 +12,8 @@ from sqlalchemy.sql import func
 from app.database.base import Base
 
 
-class CarbonTransaction(Base):
-    __tablename__ = "carbon_transactions"
+class OperationalRecord(Base):
+    __tablename__ = "operational_records"
 
     id = Column(Integer, primary_key=True, index=True)
 
@@ -25,31 +24,15 @@ class CarbonTransaction(Base):
     )
 
     source_type = Column(
-        String(30),
-        nullable=False,
-        default="Manual",
+        String(30), nullable=False
     )
 
-    source_record_id = Column(
-        Integer, nullable=True
-    )
+    quantity = Column(Float, nullable=False)
 
     emission_factor_id = Column(
         Integer,
         ForeignKey("emission_factors.id"),
         nullable=False,
-    )
-
-    quantity = Column(Float, nullable=False)
-
-    co2_calculated = Column(Float, nullable=False)
-
-    transaction_date = Column(Date, nullable=False)
-
-    created_by = Column(
-        Integer,
-        ForeignKey("users.id"),
-        nullable=True,
     )
 
     created_at = Column(
@@ -59,4 +42,3 @@ class CarbonTransaction(Base):
 
     department = relationship("Department")
     emission_factor = relationship("EmissionFactor")
-    creator = relationship("User")

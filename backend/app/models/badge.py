@@ -1,4 +1,11 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Text,
+    Boolean,
+)
+from sqlalchemy.dialects.postgresql import JSON
 
 from app.database.base import Base
 
@@ -12,6 +19,8 @@ class Badge(Base):
 
     description = Column(Text)
 
-    unlock_rule = Column(Text)
+    unlock_rule = Column(JSON)
 
-    icon = Column(String(255))
+    icon_url = Column(String(500))
+
+    status = Column(Boolean, default=True)
