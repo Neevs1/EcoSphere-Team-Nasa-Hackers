@@ -22,3 +22,19 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str = "employee"
+    department_id: int | None = None
+    status: bool = True
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    email: str | None = None
+    password: str | None = None
+    role: str | None = None
+    department_id: int | None = None
+    status: bool | None = None
