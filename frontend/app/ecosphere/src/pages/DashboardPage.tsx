@@ -55,7 +55,7 @@ export function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-h1 font-semibold text-foreground">
-          {greeting()}, {user?.name?.split(" ")[0] ?? "User"} 👋
+          {greeting()}, {user?.name?.split(" ")[0] ?? "User"}
         </h1>
         <p className="text-body text-muted-foreground mt-1">
           Here&apos;s what&apos;s happening with your ESG initiatives today.

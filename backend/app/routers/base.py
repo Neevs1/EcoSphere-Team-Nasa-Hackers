@@ -42,7 +42,11 @@ def create_crud_router(
     prefix: str,
     tag: str,
     resource_name: str,
+    write_roles: list[str] | None = None,
 ) -> APIRouter:
+    if write_roles is None:
+        write_roles = ["system_admin", "esg_admin", "department_head", "compliance_officer"]
+
     router = APIRouter(
         prefix=prefix,
         tags=[tag],
@@ -58,7 +62,7 @@ def create_crud_router(
         response_model=response_schema,
         status_code=status.HTTP_201_CREATED,
         summary=f"Create {resource_name}",
-        dependencies=[Depends(require_role(["system_admin", "esg_admin", "department_head", "compliance_officer"]))],
+        dependencies=[Depends(require_role(write_roles))],
     )
     def create_record(
         payload: create_schema,
@@ -121,7 +125,7 @@ def create_crud_router(
         "/{record_id}",
         response_model=response_schema,
         summary=f"Update {resource_name}",
-        dependencies=[Depends(require_role(["system_admin", "esg_admin", "department_head", "compliance_officer"]))],
+        dependencies=[Depends(require_role(write_roles))],
     )
     def update_record(
         record_id: int,
@@ -154,7 +158,7 @@ def create_crud_router(
         "/{record_id}",
         status_code=status.HTTP_204_NO_CONTENT,
         summary=f"Delete {resource_name}",
-        dependencies=[Depends(require_role(["system_admin", "esg_admin", "department_head", "compliance_officer"]))],
+        dependencies=[Depends(require_role(write_roles))],
     )
     def delete_record(
         record_id: int,

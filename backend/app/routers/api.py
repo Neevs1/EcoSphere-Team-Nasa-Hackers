@@ -91,6 +91,7 @@ department_router = create_crud_router(
     prefix="/departments",
     tag="Departments",
     resource_name="Department",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 category_router = create_crud_router(
@@ -101,6 +102,7 @@ category_router = create_crud_router(
     prefix="/categories",
     tag="Categories",
     resource_name="Category",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 emission_factor_router = create_crud_router(
@@ -111,6 +113,7 @@ emission_factor_router = create_crud_router(
     prefix="/emission-factors",
     tag="Emission Factors",
     resource_name="Emission factor",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 product_esg_profile_router = create_crud_router(
@@ -121,6 +124,7 @@ product_esg_profile_router = create_crud_router(
     prefix="/product-esg-profiles",
     tag="Product ESG Profiles",
     resource_name="Product ESG profile",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 environmental_goal_router = create_crud_router(
@@ -131,6 +135,7 @@ environmental_goal_router = create_crud_router(
     prefix="/environmental-goals",
     tag="Environmental Goals",
     resource_name="Environmental goal",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 esg_policy_router = create_crud_router(
@@ -141,6 +146,7 @@ esg_policy_router = create_crud_router(
     prefix="/esg-policies",
     tag="ESG Policies",
     resource_name="ESG policy",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 badge_router = create_crud_router(
@@ -151,6 +157,7 @@ badge_router = create_crud_router(
     prefix="/badges",
     tag="Badges",
     resource_name="Badge",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 reward_router = create_crud_router(
@@ -161,6 +168,7 @@ reward_router = create_crud_router(
     prefix="/rewards",
     tag="Rewards",
     resource_name="Reward",
+    write_roles=["system_admin", "esg_admin"],
 )
 
 
@@ -174,6 +182,7 @@ carbon_transaction_router = create_crud_router(
     prefix="/carbon-transactions",
     tag="Carbon Transactions",
     resource_name="Carbon transaction",
+    write_roles=["system_admin", "esg_admin", "department_head"],
 )
 
 csr_activity_router = create_crud_router(
@@ -184,6 +193,7 @@ csr_activity_router = create_crud_router(
     prefix="/csr-activities",
     tag="CSR Activities",
     resource_name="CSR activity",
+    write_roles=["system_admin", "esg_admin", "department_head"],
 )
 
 employee_participation_router = create_crud_router(
@@ -204,6 +214,7 @@ challenge_router = create_crud_router(
     prefix="/challenges",
     tag="Challenges",
     resource_name="Challenge",
+    write_roles=["system_admin", "esg_admin", "department_head"],
 )
 
 challenge_participation_router = create_crud_router(
@@ -234,6 +245,7 @@ audit_router = create_crud_router(
     prefix="/audits",
     tag="Audits",
     resource_name="Audit",
+    write_roles=["system_admin", "esg_admin", "compliance_officer"],
 )
 
 compliance_issue_router = create_crud_router(
@@ -244,6 +256,7 @@ compliance_issue_router = create_crud_router(
     prefix="/compliance-issues",
     tag="Compliance Issues",
     resource_name="Compliance issue",
+    write_roles=["system_admin", "esg_admin", "compliance_officer"],
 )
 
 department_score_router = create_crud_router(

@@ -23,6 +23,7 @@ from app.routers.dashboard import dashboard_router
 from app.routers.notifications import (
     notifications_router,
 )
+from app.routers.users import users_router
 from app.routers import api_router
 
 # Import all models so Base.metadata knows them
@@ -98,6 +99,11 @@ def db_test():
 # Auth
 app.include_router(
     auth_router, prefix="/api/v1"
+)
+
+# Users
+app.include_router(
+    users_router, prefix="/api/v1"
 )
 
 # Settings
