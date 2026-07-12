@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ecosphere-frontend
+    ports:
+      - "5173:5173"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ecosphere-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://ecosphere:ecosphere@db:5432/ecosphere
+
+  db:
+    image: postgres:17.10
+    container_name: ecosphere-db
+    environment:
+      POSTGRES_DB: ecosphere
+      POSTGRES_USER: ecosphere
+      POSTGRES_PASSWORD: ecosphere
+    ports:
+      - "5432:5432"
